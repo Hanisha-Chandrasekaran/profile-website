@@ -1,0 +1,53 @@
+
+:root {
+    /* Background colours */
+    --color-bg: #fbf9fe;
+    --color-surface: #ffffff;
+    --color-surface-soft: #f3edfb;
+
+    /* Theme colours */
+    --color-primary: #9275bd;
+    --color-primary-dark: #71549d;
+    --color-accent: #d9b8d8;
+
+    /* Text colours */
+    --color-text: #30283b;
+    --color-text-muted: #766e80;
+    --color-border: #e8e0f0;
+
+    /* Effects */
+    --color-shadow: rgba(83, 61, 111, 0.10);
+
+    /* Typography */
+    --font-body: "DM Sans", Arial, sans-serif;
+    --font-heading: "Playfair Display", Georgia, serif;
+
+    /* Layout */
+    --space-section: 6.5rem;
+    --content-width: 1120px;
+
+    /* Shape and animation */
+    --radius-card: 22px;
+    --radius-pill: 999px;
+    --transition: 220ms ease;
+}
+
+:root[data-theme="dark"] {
+    /* Background colours */
+    --color-bg: #1d1925;
+    --color-surface: #282231;
+    --color-surface-soft: #342a40;
+
+    /* Theme colours */
+    --color-primary: #c2a8e8;
+    --color-primary-dark: #d7c4f2;
+    --color-accent: #a77fae;
+
+    /* Text colours */
+    --color-text: #f4eff9;
+    --color-text-muted: #c0b5cc;
+    --color-border: #44384f;
+
+    /* Effects */
+    --color-shadow: rgba(0, 0, 0, 0.22);
+}

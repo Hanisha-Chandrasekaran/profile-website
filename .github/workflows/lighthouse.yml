@@ -1,0 +1,31 @@
+
+name: Lighthouse Performance Audit
+
+on:
+  workflow_run:
+    workflows:
+      - Deploy to GitHub Pages
+    types:
+      - completed
+
+  schedule:
+    - cron: '0 3 * * 1'
+
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    name: Run Lighthouse Audit
+
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Lighthouse audit
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            https://hanisha-chandrasekaran.github.io/profile-website/
+          uploadArtifacts: true
+          temporaryPublicStorage: true
