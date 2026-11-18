@@ -22,8 +22,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Run Lighthouse audit
         uses: treosh/lighthouse-ci-action@v12
+        env:
+          LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
         with:
           urls: |
             https://hanisha-chandrasekaran.github.io/profile-website/
