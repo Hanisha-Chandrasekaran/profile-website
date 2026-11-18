@@ -1,1 +1,1 @@
-This file is maintained by the develop branch.
+This file is maintained through both develop and feature branches.
