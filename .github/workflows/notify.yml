@@ -1,0 +1,44 @@
+
+name: Deployment Notifications
+
+on:
+  workflow_run:
+    workflows:
+      - Deploy to GitHub Pages
+    types:
+      - completed
+
+jobs:
+  notify:
+    name: Deployment Status Notification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare deployment status
+        id: status
+        run: |
+          if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
+            echo "message=Deployment completed successfully." >> "$GITHUB_OUTPUT"
+          else
+            echo "message=Deployment failed. Please check GitHub Actions." >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send optional Slack notification
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          STATUS_MESSAGE: ${{ steps.status.outputs.message }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            payload=$(printf '{"text":"%s"}' "$STATUS_MESSAGE")
+
+            curl --fail --silent --show-error \
+              -X POST \
+              -H "Content-Type: application/json" \
+              -d "$payload" \
+              "$SLACK_WEBHOOK_URL"
+
+            echo "Slack notification sent."
+          else
+            echo "Slack webhook not configured. Skipping notification."
+            echo "$STATUS_MESSAGE"
+          fi

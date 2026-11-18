@@ -1,0 +1,93 @@
+
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-html-titles:
+    name: Check HTML Title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check HTML title
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          html = Path("index.html").read_text(encoding="utf-8")
+
+          if re.search(r"<title>\s*.+?\s*</title>", html, re.IGNORECASE):
+              print("HTML title check passed.")
+          else:
+              print("Error: HTML title is missing or empty.")
+              raise SystemExit(1)
+          PY
+
+  check-image-alt:
+    name: Check Image Alt Attributes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check image alt attributes
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          html = Path("index.html").read_text(encoding="utf-8")
+
+          images = re.findall(r"<img\b[^>]*>", html, re.IGNORECASE)
+
+          missing_alt = [
+              image for image in images
+              if not re.search(r"\balt\s*=", image, re.IGNORECASE)
+          ]
+
+          if missing_alt:
+              print("Error: Some images are missing alt attributes.")
+              for image in missing_alt:
+                  print(image)
+              raise SystemExit(1)
+
+          print("Image alt attribute check passed.")
+          PY
+
+  check-no-console-log:
+    name: Check Console Logs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check JavaScript files
+        run: |
+          if grep -R -n "console\.log" --include="*.js" js/; then
+            echo "Error: Remove console.log statements before merging."
+            exit 1
+          else
+            echo "Console log check passed."
+          fi
+
+  all-checks-passed:
+    name: All Checks Passed
+    runs-on: ubuntu-latest
+
+    needs:
+      - check-html-titles
+      - check-image-alt
+      - check-no-console-log
+
+    steps:
+      - name: Confirm successful checks
+        run: echo "All pull request checks passed successfully."
