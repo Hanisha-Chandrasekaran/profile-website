@@ -1,0 +1,39 @@
+
+name: Validate HTML and CSS
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'theme/**'
+      - 'ci/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  validate:
+    name: HTML and CSS Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate HTML using HTMLHint
+        run: npx --yes htmlhint@1.1.4 index.html
+
+      - name: Run CSSLint compatibility check
+        continue-on-error: true
+        run: npx --yes csslint@1.0.5 css/theme.css css/style.css
+
+      - name: Validate CSS using Stylelint
+        run: npx --yes stylelint@16.23.1 --config stylelint.config.json css/theme.css css/style.css
