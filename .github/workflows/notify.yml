@@ -8,6 +8,8 @@ on:
     types:
       - completed
 
+permissions: {}
+
 jobs:
   notify:
     name: Deployment Status Notification
